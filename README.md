@@ -27,6 +27,10 @@ http://www.workerman.net/gatewaydoc/
 
 ```
 git clone https://github.com/fage1151/GatewayWorker.git
+
+composer update
+
+composer dumpautoload -o
 ```
 
 使用GatewayWorker开发的项目
