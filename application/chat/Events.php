@@ -108,14 +108,7 @@ class Events
      */
     protected static function process($data = [])
     {
-        $data['fun'] = 'index';
-        if (!class_exists('Engine')) {
-            $frameworkBootstrap = realpath(__DIR__) . '/../Api/index.php';
-            require_once $frameworkBootstrap;
-        }
-        $engine = new Engine ();
-        $engine->setRoutePath($data);
-        return $engine->run();
+
     }
     protected static function check_login()
     {
