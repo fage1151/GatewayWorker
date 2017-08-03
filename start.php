@@ -14,7 +14,7 @@ if(!extension_loaded('swoole'))
 
 if(!extension_loaded('posix'))
 {
-    exit("Please install posix extension. See http://doc3.workerman.net/install/install.html\n");
+    exit("Please install posix extension. \n");
 }
 
 // 标记是全局启动
