@@ -1,3 +1,7 @@
+这是什么
+================
+本库是基于workerman的swoole移植版本[swoole-worker](https://github.com/fage1151/swoole-worker)开发的一个项目框架,用法与workerman版本的gatewayworker兼容
+
 GatewayWorker 
 =================
 
