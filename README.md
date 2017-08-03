@@ -27,7 +27,7 @@ http://www.workerman.net/gatewaydoc/
 
 只安装GatewayWorker内核文件（不包含start_gateway.php start_businessworker.php等启动入口文件）
 ```
-composer require workerman/gateway-worker
+https://github.com/fage1151/GatewayWorker.git
 ```
 
 使用GatewayWorker开发的项目
