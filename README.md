@@ -22,10 +22,9 @@ demo说明见源码readme。
 =======
 http://www.workerman.net/gatewaydoc/
 
-安装内核
+安装
 =======
 
-只安装GatewayWorker内核文件（不包含start_gateway.php start_businessworker.php等启动入口文件）
 ```
 https://github.com/fage1151/GatewayWorker.git
 ```
