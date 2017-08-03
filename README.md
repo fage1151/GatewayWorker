@@ -26,7 +26,7 @@ http://www.workerman.net/gatewaydoc/
 =======
 
 ```
-https://github.com/fage1151/GatewayWorker.git
+git clone https://github.com/fage1151/GatewayWorker.git
 ```
 
 使用GatewayWorker开发的项目
