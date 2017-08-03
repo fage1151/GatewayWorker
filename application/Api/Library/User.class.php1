@@ -1,0 +1,257 @@
+<?php
+/**
+ * Class Library_User
+ *
+ * @author PhpGame
+ */
+
+class Library_User extends Library_Base
+{
+    
+    /**
+     * @return Library_User
+     */
+    static public function Instance()
+    {
+        return parent::InstanceInternal(__CLASS__);
+    }
+
+    /**
+     * 用户登陆实例
+     * 
+     * @param string $machinecode 机器码
+     * @param string $sign        认证
+     * @param string $ip          服务器IP
+     * @param string $port        端口
+     * @param string $loginip     客户端访问IP
+     * 
+     * @return array || integer
+     */
+    public function userLogin($machinecode, $sign, $ip, $port, $loginip)
+    {
+        $garr = array();
+        $printinfo = Library_Model_User::Instance()->getPrintSignByMkey($machinecode);
+        if ($printinfo) {
+            if (trim($printinfo['msign']) == trim($sign)) {
+                Library_Model_User::Instance()->updatePrintLoginByMkey($machinecode, $loginip);
+                return array($printinfo['id']);
+            } else {
+                return '10002'; //认证错误
+            }
+        } else {
+            return '10001'; //机器码错误
+        }
+    }
+
+    /**
+     * 用户请求数据
+     *
+     * @param string $machinecode 机器码
+     *
+     * @return array || integer
+     */
+    public function getData($print_id)
+    {
+        $rs = Library_Model_User::Instance()->getPrintDataLogin($print_id);
+        if ($rs) {
+            return $rs;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 用户请求打印机数据
+     *
+     * @param string $machinecode 机器码
+     *
+     * @return array || integer
+     */
+    public function getPrintData($machinecode)
+    {
+        $rs = Library_Model_User::Instance()->getPrintData($machinecode);
+        if ($rs) {
+            return $rs;
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * 认证api
+     *
+     * @param string $machinecode 机器码
+     * @param string $sign        认证
+     * @param string $userid      商家ID
+     *
+     * @return array || integer
+     */
+    public function checkApi($userid, $machinecode, $sign, $params)
+    {
+        $userinfo = Library_Model_User::Instance()->getUserInfoByUserid($userid);
+        $printinfo = Library_Model_User::Instance()->getPrintSignByMkey($machinecode);
+        if ($printinfo && $userinfo) {
+            $s1 = $this->generateSign($params, $userinfo['apikey'], $printinfo['msign']);
+            if (trim($s1) == trim($sign)) {
+                return array($printinfo['id']);
+            } else {
+                return '10002'; //认证错误
+            }
+        } else {
+            return '10001'; //机器码错误
+        }
+    }
+    
+    /**
+     * 用户登陆实例
+     *
+     * @param string $machinecode 机器码
+     * @param string $content     内容
+     *
+     * @return array || integer
+     */
+    public function writePrintData($machinecode, $content)
+    {
+        $garr = array();
+        $printinfo = Library_Model_User::Instance()->getPrintSignByMkey($machinecode);
+        if ($printinfo) {
+            $content_id = Library_Model_User::Instance()->insertPrintData($printinfo['id'], $content);
+            return array($content_id);
+        } else {
+            return '10001'; //机器码错误
+        }
+    }
+    
+    /**
+     * 服务器发送数据后处理
+     *
+     * @param string $content_id 内容ID
+     *
+     * @return array || integer
+     */
+    public function updatePrintDataStautsSend($content_id)
+    {
+        Library_Model_User::Instance()->updatePrintDataByPrintid($content_id, 1);
+        return true;
+    }
+    
+    /**
+     * 接收到数据后处理
+     *
+     * @param string $content_id 内容ID
+     *
+     * @return array || integer
+     */
+    public function updatePrintDataStauts($content_id)
+    {
+        Library_Model_User::Instance()->updatePrintDataByPrintid($content_id, 2);
+        return true;
+    }
+    
+    /**
+     * 接收到数据后处理
+     *
+     * @param string $content_id 内容ID
+     *
+     * @return array || integer
+     */
+    public function finishPrintDataStauts($content_id)
+    {
+        Library_Model_User::Instance()->updatePrintDataByPrintid($content_id, 3);
+        $row = Library_Model_User::Instance()->getPrintDataByPrintid($content_id);
+        if (!empty($row)) {
+            return $row;
+        }
+        return '10001'; 
+    }
+    
+    /**
+     * 接收到数据后处理
+     *
+     * @param string $content_id 内容ID
+     *
+     * @return array || integer
+     */
+    public function sendPrintDataStauts($content_id)
+    {
+        $row = Library_Model_User::Instance()->getPrintDataByPrintid($content_id);
+        if (!empty($row)) {
+            return $row;
+        }
+        return '10001';
+    }
+    
+    /**
+     * 用户登出
+     *
+     * @param string $machinecode 机器码
+     *
+     * @return Library_User
+     */
+    public function userLogout($machinecode)
+    {
+        Library_Model_User::Instance()->updatePrintLogoutByID($machinecode);
+        //Library_Model_User::Instance()->updatePrintLogoutByMkey($machinecode);
+        return true;
+    }
+
+    /**
+     * 获取测试的apikey和机器码认证
+     *
+     * @param string $userid      商家id
+     * @param string $machinecode 机器码
+     *
+     * @return Library_User
+     */
+    public function getCodeKey($userid, $machinecode)
+    {
+        $rs = array();
+        $user = Library_Model_User::Instance()->getUserInfoByUserid($userid);
+        $print = Library_Model_User::Instance()->getPrintSignByMkey($machinecode);
+        $rs['apikey'] = $user['apikey'];
+        $rs['msign'] = $print['msign'];
+        return $rs;
+    }
+    
+    /**
+     * 有纸设定，改成在线状态
+     *
+     * @param string $print_id 打印id
+     *
+     * @return bool
+     */
+    public function setPaper($print_id)
+    {
+        return Library_Model_User::Instance()->updatePrintLoginByid($print_id, '1');
+    }
+    
+    /**
+     * 无纸设定，改成无纸状态
+     *
+     * @param string $print_id 打印id
+     *
+     * @return bool
+     */
+    public function setNoPaper($print_id)
+    {
+        return Library_Model_User::Instance()->updatePrintLoginByid($print_id, '2');
+    }
+    
+    public function generateSign($params, $apiKey, $msign)
+    {
+        //所有请求参数按照字母先后顺序排序
+        ksort($params);
+        //定义字符串开始 结尾所包括的字符串
+        $stringToBeSigned = $apiKey;
+        //把所有参数名和参数值串在一起
+        foreach ($params as $k => $v)
+        {
+            $stringToBeSigned .= urldecode($k.$v);
+        }
+        unset($k, $v);
+        //把venderKey夹在字符串的两端
+        $stringToBeSigned .= $msign;
+        //使用MD5进行加密，再转化成大写
+        return strtoupper(md5($stringToBeSigned));
+    }
+}
