@@ -1,6 +1,7 @@
 这是什么
 ================
-本库是基于workerman的swoole移植版本[swoole-worker](https://github.com/fage1151/swoole-worker)开发的一个项目框架,用法与workerman版本的[gatewayworker](https://github.com/walkor/GatewayWorker)兼容
+本库是基于workerman的swoole移植版本[swoole-worker](https://github.com/fage1151/swoole-worker)开发的一个项目框架,移除了对pcntl,libevent,event扩展的依赖,转而使用swoole提供的swoole_process和swoole_event，定时器采用swoole的swoole_timer
+用法与workerman版本的[gatewayworker](https://github.com/walkor/GatewayWorker)兼容
 
 GatewayWorker 
 =================
