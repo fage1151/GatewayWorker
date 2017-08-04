@@ -9,11 +9,11 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 Autoloader::setRootPath(__DIR__);
 
 // gateway 进程，这里使用Text协议，可以用telnet测试
-$gateway = new Gateway("websocket://0.0.0.0:8282");
+$gateway = new Gateway("text://0.0.0.0:8282");
 // gateway名称，status方便查看
 $gateway->name = 'gateway';
 // gateway进程数
-$gateway->count = 1;
+$gateway->count = 5;
 // 本机ip，分布式部署时使用内网ip
 $gateway->lanIp = '127.0.0.1';
 // 内部通讯起始端口，假如$gateway->count=4，起始端口为4000
