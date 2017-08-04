@@ -4,7 +4,7 @@
     "homepage": "http://www.workerman.net",
     "license" : "MIT",
     "require": {
-        "fage1151/swoole-worker" : ">=0.1.3"
+        "fage1151/swoole-worker" : ">=0.1.5"
     },
     "autoload": {
         "psr-4": {"GatewayWorker\\": "./GatewayWorker"}
